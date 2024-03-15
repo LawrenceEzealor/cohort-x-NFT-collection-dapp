@@ -40,7 +40,7 @@ function App() {
                     <Button className="px-8 py-2 text-xl mt-2">
                       <a
                         target="_blank"
-                        href={`https://testnets.opensea.io/assets/mumbai/${address}/${x.edition}`}
+                        href={`https://testnets.opensea.io/assets/mumbai/${import.meta.env.VITE_contract_address}/${x.edition}`}
                       >
                         Link to Opensea
                       </a>
