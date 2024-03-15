@@ -5,10 +5,12 @@ import Header from "./component/Header";
 import AppTabs from "./component/AppTabs";
 import useCollections from "./hooks/useCollections";
 import useMyNfts from "./hooks/useMyNfts";
+import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 
 configureWeb3Modal();
 
 function App() {
+  const { address } = useWeb3ModalAccount();
   const tokensData = useCollections();
   const myTokenIds = useMyNfts();
 
@@ -38,11 +40,12 @@ function App() {
                     <Button className="px-8 py-2 text-xl mt-2">
                       <a
                         target="_blank"
-                        href={`${"https://testnets.opensea.io/assets/mumbai/0xfbfa75a0acc293aaa7914e24637ca4835752307d/2"}`}
+                        href={`https://testnets.opensea.io/assets/mumbai/${address}/${x.edition}`}
                       >
                         Link to Opensea
                       </a>
                     </Button>
+                    <Button className="px-8 py-2 text-xl mt-2">Transfer</Button>
                   </Box>
                 ))
               )}
