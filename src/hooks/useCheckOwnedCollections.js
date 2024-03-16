@@ -3,11 +3,10 @@ import erc721 from "../constants/erc721.json";
 import multicallAbi from "../constants/multicall.json";
 import { readOnlyProvider } from "../constants/providers";
 import { useEffect, useMemo, useState } from "react";
-import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 
-const useMyNfts = () => {
-  const { address } = useWeb3ModalAccount();
+const useCheckOwnedCollections = () => {
   const [data, setData] = useState([]);
+
   const tokenIDs = useMemo(
     () => [...Array.from({ length: 30 })].map((_, index) => index),
     []
@@ -30,6 +29,7 @@ const useMyNfts = () => {
       const callResults = await multicall.tryAggregate.staticCall(false, calls);
 
       const validResponsesIndex = [];
+
       const validResponses = callResults.filter((x, i) => {
         if (x[0] === true) {
           validResponsesIndex.push(i);
@@ -41,19 +41,20 @@ const useMyNfts = () => {
       const decodedResponses = validResponses.map((x) =>
         itf.decodeFunctionResult("ownerOf", x[1])
       );
-
-      const ownedTokenIds = [];
+      const ownedTokens = [];
 
       decodedResponses.forEach((addr, index) => {
-        if (String(addr).toLowerCase() === String(address).toLowerCase())
-          ownedTokenIds.push(validResponsesIndex[index]);
+        const address = Object.values(addr)[0];
+
+        let obj = { address, index: validResponsesIndex[index] };
+        ownedTokens.push(obj);
       });
 
-      setData(ownedTokenIds);
+      setData(ownedTokens);
     })();
-  }, [address, tokenIDs]);
+  }, [tokenIDs]);
 
   return data;
 };
 
-export default useMyNfts;
+export default useCheckOwnedCollections;
